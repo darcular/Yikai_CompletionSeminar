@@ -1,0 +1,167 @@
+\pgfplotsset{every error bar/.style={line width=1mm}}
+
+\pgfplotstableread{
+x         y     y_max-y     y-y_min    st-deviation y_max y_min y+ y-
+1:00    77.94   185-77.94   77.94-1     30.828  185 1   108.768 47.112
+2:00    52.519  128-52.519  52.519-7    17.866  128 7   70.385  34.653
+3:00    37.826  86-37.826   37.826-6    13.735  86  6   51.561  24.091
+4:00    46.519  86-46.519   46.519-16   12.733  86  16  59.252  33.786
+5:00    74.807  120-74.807  74.807-11   19.574  120 11  94.381  55.233
+6:00    208.0   294-208.0   208.0-13    54.404  294 13  262.404 153.596
+7:00    381.442 622-381.442 381.442-10  118.707 622 10  500.149 262.735
+8:00    435.384 859-435.384 435.384-51  165.618 859 51  601.002 269.766
+9:00    346.288 597-346.288 346.288-10  105.624 597 10  451.912 240.664
+10:00   295.634 471-295.634 295.634-2   76.548  471 2   372.182 219.086
+11:00   291.480 469-291.480 291.480-2   74.458  469 2   365.938 217.022
+12:00   298.038 450-298.038 298.038-15  76.954  450 15  374.992 221.084
+13:00   299.173 492-299.173 299.173-44  71.66   492 44  370.833 227.513
+14:00   335.538 466-335.538 335.538-203 58.512  466 203 394.05  277.026
+15:00   387.596 610-387.596 387.596-206 76.098  610 206 463.694 311.498
+16:00   431.711 683-431.711 431.711-178 100.73  683 178 532.441 330.981
+17:00   497.730 816-497.730 497.730-224 131.345 816 224 629.075 366.385
+18:00   463.096 727-463.096 463.096-252 107.441 727 252 570.537 355.655
+19:00   318.596 539-318.596 318.596-111 74.813  539 111 393.409 243.783
+20:00   259.865 643-259.865 259.865-175 72.361  643 175 332.226 187.504
+21:00   293.596 620-293.596 293.596-178 73.790  620 178 367.386 219.806
+22:00   272.173 529-272.173 272.173-175 71.597  529 175 343.77  200.576
+23:00   202.134 417-202.134 202.134-118 66.219  417 118 268.353 135.915
+24:00   111.923 230-111.923 111.923-14  44.496  230 14  156.419 67.427
+}{\mytable}
+
+
+% \begin{tikzpicture}[scale=0.9]
+% \begin{axis} [
+%     width  = 1*\textwidth,
+%     height = 8cm,
+%     symbolic x coords={1:00, 2:00, 3:00, 4:00, 5:00, 6:00, 7:00, 8:00, 9:00, 10:00, 11:00, 12:00, 13:00, 14:00, 15:00, 16:00, 17:00, 18:00, 19:00, 20:00, 21:00, 22:00, 23:00, 24:00},
+%     xticklabel style = {rotate=90,anchor=east},
+%     xtick=data,
+%     xlabel={Time of day},
+%     ylabel={Number of vehicles}
+% ]
+% \addplot+[red, very thick, forget plot,only marks] 
+%   plot[very thick, error bars/.cd, y dir=plus, y explicit]
+%   table[x=x,y=y,y error expr=\thisrow{y_max-y}] {\mytable};
+% \addplot+[blue, very thick, only marks,xticklabels=\empty] 
+%   plot[very thick, error bars/.cd, y dir=minus, y explicit]
+%   table[x=x,y=y,y error expr=\thisrow{y-y_min}] {\mytable};
+% \end{axis} 
+% \end{tikzpicture}
+
+\pgfplotsset{
+    box plot/.style={
+        /pgfplots/.cd,
+        black,
+        only marks,
+        mark=-,
+        mark size=\pgfkeysvalueof{/pgfplots/box plot width},
+        /pgfplots/error bars/y dir=plus,
+        /pgfplots/error bars/y explicit,
+        /pgfplots/table/x index=\pgfkeysvalueof{/pgfplots/box plot x index},
+    },
+    box plot box/.style={
+        /pgfplots/error bars/draw error bar/.code 2 args={%
+            \draw  ##1 -- ++(\pgfkeysvalueof{/pgfplots/box plot width},0pt) |- ##2 -- ++(-\pgfkeysvalueof{/pgfplots/box plot width},0pt) |- ##1 -- cycle;
+        },
+        /pgfplots/table/.cd,
+        y index=\pgfkeysvalueof{/pgfplots/box plot box top index},
+        y error expr={
+            \thisrowno{\pgfkeysvalueof{/pgfplots/box plot box bottom index}}
+            - \thisrowno{\pgfkeysvalueof{/pgfplots/box plot box top index}}
+        },
+        /pgfplots/box plot
+    },
+    box plot top whisker/.style={
+        /pgfplots/error bars/draw error bar/.code 2 args={%
+            \pgfkeysgetvalue{/pgfplots/error bars/error mark}%
+            {\pgfplotserrorbarsmark}%
+            \pgfkeysgetvalue{/pgfplots/error bars/error mark options}%
+            {\pgfplotserrorbarsmarkopts}%
+            \path ##1 -- ##2;
+        },
+        /pgfplots/table/.cd,
+        y index=\pgfkeysvalueof{/pgfplots/box plot whisker top index},
+        y error expr={
+            \thisrowno{\pgfkeysvalueof{/pgfplots/box plot box top index}}
+            - \thisrowno{\pgfkeysvalueof{/pgfplots/box plot whisker top index}}
+        },
+        /pgfplots/box plot
+    },
+    box plot bottom whisker/.style={
+        /pgfplots/error bars/draw error bar/.code 2 args={%
+            \pgfkeysgetvalue{/pgfplots/error bars/error mark}%
+            {\pgfplotserrorbarsmark}%
+            \pgfkeysgetvalue{/pgfplots/error bars/error mark options}%
+            {\pgfplotserrorbarsmarkopts}%
+            \path ##1 -- ##2;
+        },
+        /pgfplots/table/.cd,
+        y index=\pgfkeysvalueof{/pgfplots/box plot whisker bottom index},
+        y error expr={
+            \thisrowno{\pgfkeysvalueof{/pgfplots/box plot box bottom index}}
+            - \thisrowno{\pgfkeysvalueof{/pgfplots/box plot whisker bottom index}}
+        },
+        /pgfplots/box plot
+    },
+    box plot median/.style={
+        /pgfplots/box plot,
+        /pgfplots/table/y index=\pgfkeysvalueof{/pgfplots/box plot median index}
+    },
+    box plot width/.initial=0.2em,
+    box plot x index/.initial=0,
+    box plot median index/.initial=1,
+    box plot box top index/.initial=2,
+    box plot box bottom index/.initial=3,
+    box plot whisker top index/.initial=4,
+    box plot whisker bottom index/.initial=5,
+}
+
+\newcommand{\boxplot}[2][]{
+    \addplot [box plot median,#1] table {#2};
+    \addplot [forget plot, box plot box,#1] table {#2};
+    \addplot [forget plot, box plot top whisker,#1] table {#2};
+    \addplot [forget plot, box plot bottom whisker,#1] table {#2};
+}
+
+
+
+\begin{tikzpicture}[scale=0.9]
+\begin{axis} [
+    width  = 1.2*\columnwidth,
+    height = 7cm,
+    symbolic x coords={1:00, 2:00, 3:00, 4:00, 5:00, 6:00, 7:00, 8:00, 9:00, 10:00, 11:00, 12:00, 13:00, 14:00, 15:00, 16:00, 17:00, 18:00, 19:00, 20:00, 21:00, 22:00, 23:00, 24:00},
+    xticklabel style = {rotate=90,anchor=east},
+    xtick=data,
+    xlabel={Time of Day},
+    ylabel={Number of Vehicles}
+]
+
+\boxplot [
+    forget plot,
+    box plot whisker bottom index=6,
+    box plot whisker top index=5,
+    box plot box bottom index=8,
+    box plot box top index=7,
+    box plot median index=1
+] {\mytable}
+
+% \addplot [domain=-2:6, thick, cyan] {-x+25+rnd}; \addlegendentry{Some line}
+\end{axis}
+\end{tikzpicture}
+
+% \begin{tikzpicture}
+% \begin{axis} [
+%     width  = 1*\textwidth,
+%     height = 8cm,
+%     symbolic x coords={1:00, 2:00, 3:00, 4:00, 5:00, 6:00, 7:00, 8:00, 9:00, 10:00, 11:00, 12:00, 13:00, 14:00, 15:00, 16:00, 17:00, 18:00, 19:00, 20:00, 21:00, 22:00, 23:00, 24:00},
+%     xticklabel style = {rotate=90,anchor=east},
+%     xtick=data
+% ]
+%     \addplot [box plot median] table[x=x, y=y]  {\mytable};
+%     \addplot [box plot box] table[x=x, y=st-deviation]  {\mytable};
+%     \addplot [box plot top whisker] table[x=x, y=y+y_max-y]  {\mytable};
+%     \addplot [box plot bottom whisker] table[x=x, y=y-y-y_min]  {\mytable};
+% \end{axis}
+% \end{tikzpicture}
+
+

@@ -1,0 +1,160 @@
+
+
+    \usetikzlibrary{
+        pgfplots.groupplots,
+    }
+    \pgfplotsset{
+        % so that the new feature of centering the `nodes near coords' text is applied
+        compat=1.9,
+        %
+        % create a style which will be used to show the sum values
+        % (borrowed from <http://tex.stackexchange.com/a/162389/95441>)
+        show sum on top/.style={
+            /pgfplots/scatter/@post marker code/.append code={
+                \node [
+                    black,
+                    rotate=90,
+                    anchor=west,
+                    at={(normalized axis cs:
+                            \pgfkeysvalueof{/data point/x},
+                            \pgfkeysvalueof{/data point/y})
+                    },
+                ] {\pgfmathprintnumber{\pgfkeysvalueof{/data point/y}}};
+            },
+        },
+    }
+    \pgfplotstableread{
+        Criterion   {Clusters with surrounding abnormal traffic}  {Clusters without surrounding abnormal traffic}     
+        3         41      20     
+        4         86      21     
+        5         396     149     
+        6         267     98     
+        7         198     40     
+        8         149     36
+        9         103     25
+        10        89      15
+        $>$10     380     50     
+    }\data
+    % get number of columns in the table
+    \pgfplotstablegetcolsof{\data}
+        \pgfmathtruncatemacro{\NoOfCols}{\pgfmathresult - 1}
+    % we also need this value again on a "zero basis" for a style
+        \pgfmathtruncatemacro{\NoOfColsZeroBased}{\NoOfCols-1}
+    % add column of the sum of the values in each row
+    % (because you did the rest also with loops, so here is the loop solution for it)
+    % (inspired by <http://tex.stackexchange.com/a/281436/95441>)
+    \pgfplotstablecreatecol[
+        create col/assign/.code={
+                % create and initialize a variable that stores the sum values
+                \pgfmathsetmacro\RowSum{0}
+            % cycle through the columns
+            \pgfplotsforeachungrouped \i in {1,...,\NoOfCols} {
+                \pgfmathsetmacro\RowSum{\RowSum+\thisrowno{\i}}
+            }
+            % set the calculated value to the corresponding cell
+            \pgfkeyslet{/pgfplots/table/create col/next content}{\RowSum}
+        }
+    ]{Sum}{\data}
+
+
+    \begin{tikzpicture}
+        \begin{groupplot}[
+            group style={
+                columns=2,
+                xlabels at=edge bottom,
+                ylabels at=edge left,
+                horizontal sep=1cm,
+                group name=plots,
+            },
+            legend cell align={left},
+            ymin=0,
+            enlarge y limits={upper,value=0.1},
+            ylabel=Number of Clusters,
+            xlabel=Cluster size (members),
+            ybar stacked,
+            y=0.015cm,
+            % instead of making the ticks invisible, just set the length to zero
+            major tick length=0pt,
+            xtick=data,
+            xticklabels from table={\data}{Criterion},
+            legend columns=1,
+            % -----
+            % define the number style for the `nodes near coords' where
+            % only values greater than 5 should be shown
+            % (adapted from <http://tex.stackexchange.com/a/59961/95441>
+            nodes near coords={
+                \pgfkeys{/pgf/fpu=true}
+                \pgfmathparse{\pgfplotspointmeta-5}
+                \pgfmathfloatifflags{\pgfmathresult}{+}{%
+                    \pgfmathprintnumber[
+                        precision=0,
+                    ]{\pgfplotspointmeta}\%
+                }{}
+                \pgfkeys{/pgf/fpu=false}
+            },
+%            % because rotating the values would cause them to overlap
+%            % I just provide the solution to that in commented form
+%            nodes near coords style={
+%                rotate=90,
+%                font=\footnotesize,
+%            },
+            % to the last plot the sum value should be added as a node
+            % for which we use the created style
+            every axis plot no \NoOfColsZeroBased/.append style={
+                show sum on top,
+            },
+        ]
+        \nextgroupplot[
+            % instead of shifting the `xlabel' just provide a title
+            title=,
+            legend to name=grouplegend,
+        ]
+            % add all data columns to the axis
+            \foreach \i in {1,...,\NoOfCols} {
+                \ifthenelse{\i=1}
+                {
+                    \addplot+ [
+                        % this has to be given because we want to use a different
+                        % value than the default `y' value
+                        point meta=explicit,
+                    ] table [
+                        x expr=\coordindex,
+                        y index=\i,
+                        % here we calculate the number which we want to be plotted
+                        meta expr=\thisrowno{\i}/\thisrow{Sum}*100,
+                    ] {\data};
+                    % extract the corresponding column header name from the table
+                    \pgfplotstablegetcolumnnamebyindex{\i}\of{\data}\to{\colname}
+                    % use it as legend entry
+                    \addlegendentryexpanded{\colname}
+
+                }
+                {
+                    \addplot+ [
+                    % this has to be given because we want to use a different
+                    % value than the default `y' value
+                    point meta=explicit,
+                    ] table [
+                        x expr=\coordindex,
+                        y index=\i,
+                        meta expr=0,
+                    ] {\data};
+                    % extract the corresponding column header name from the table
+                    \pgfplotstablegetcolumnnamebyindex{\i}\of{\data}\to{\colname}
+                    % use it as legend entry
+                    \addlegendentryexpanded{\colname}
+
+                }
+            }
+%        % I removed the second plot because there is nothing different here
+%        \nextgroupplot
+        \end{groupplot}
+
+        % \draw [dashed] (plots c1r1.south west) -- ++(0,-1.5);
+        % \draw [dashed] (plots c1r1.south east) -- ++(0,-1.5);
+
+        \node [inner sep=0pt,anchor=north, yshift= 7ex, xshift= -2.2ex]
+            at (plots c1r1.north) {\ref{grouplegend}};
+
+    \end{tikzpicture}
+
