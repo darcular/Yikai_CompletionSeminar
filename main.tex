@@ -97,12 +97,15 @@
 
 \begin{frame}
     \frametitle{Research Hypothesis}
+    \small
     It is possible to develop a big data processing platform for urban transport that targets the specific needs, demands and challenges of big data including the volume, velocity, and variety of urban traffic data.
-
-    \begin{block}{Sub-hypothesis 1}
+    \begin{block}{Sub-hypothesis 1} \small
+    Is it possible to collect social media data just from the road network
+    \end{block}
+    \begin{block}{Sub-hypothesis 2} \small
     Is it possible to use social media data as a proxy for official traffic data that is more expensive and difficult to collect?
     \end{block}
-    \begin{block}{Sub-hypothesis 2}
+    \begin{block}{Sub-hypothesis 3} \small
     Are there new spatio-temporal algorithms that need to be realised to address the specific challenges around the analysis of such real-time traffic/social-media data?
     \end{block}
 \end{frame}
@@ -647,14 +650,14 @@
 %----------------------------
 \subsection{Social Media Data-driven Abnormality Analysis}
 \begin{frame}
-    \frametitle{}
+    \frametitle{Social Media Data-driven Abnormality Analysis}
 	 For each detected social-media cluster, we check its surrounding SCATS records for abnormal traffic flow volumes. 
 	 \begin{itemize} \small
 	       \item A spatio-temporal bounding box is calculated for retrieving the surrounding SCATS data for each social-media cluster.
-	       \begin{itemize} \tiny
-	            \item The temporal range of this bounding box starts from the earliest timestamp to the last timestamp in the cluster members.
-	            \item The spatial area of this bounding box is a circular area with a calculated radius.
-	        \end{itemize}
+	       %\begin{itemize} \tiny
+	       %     \item The temporal range of this bounding box starts from the earliest timestamp to the last timestamp in the cluster members.
+	       %     \item The spatial area of this bounding box is a circular area with a calculated radius.
+	       % \end{itemize}
 	        \item A traffic volume abnormality is detected based on its baseline
 	 \end{itemize}
 	 \vspace{-0.15cm}
@@ -704,13 +707,17 @@
 \end{frame}
 
 \begin{frame}[plain]
-    \frametitle{Main Publications}
+    \frametitle{Publications}
     \begin{itemize} \tiny
-	    \item Y. Gong, L. Morandini, and R.O. Sinnott, The Design and Benchmarking of a Cloud-based Platform for Processing and Visualization of Traffic Data, in \emph{proceedings of the 4th IEEE International Conference on Big Data and Smart Computing}, Jeju Island, Korea, February 2017.
-	    \item Y. Gong, F. Deng, and R.O. Sinnott, Identification of (near) Real-time Traffic Congestion in the Cities of Australia through Twitter, Understanding the City with Urban Informatics, in \emph{Proceedings of the 24th ACM International Conference on Information and Knowledge Management (CIKM)}, Melbourne, Australia, October 2015.
-	    \item Y. Gong, P. Rimba, and R.O. Sinnott, RT-DBSCAN: Real-time Parallel Clustering of Spatio-Temporal Data using Spark-Streaming, in \emph{Proceedings of the International Conference on Computational Science (ICCS)}, Wuxi, China, June 2018.
-	    \item Y. Gong, P. Rimba, and R.O. Sinnott, A Big Data Architecture for Near Real-time Traffic Analytics, in \emph{Proceedings of the 10th IEEE/ACM International Conference on Utility and Cloud Computing (UCC)}, Texas, USA, December 2017.
-        \item Y. Gong, R.O. Sinnott, S. Chen, and P. Rimba, Urban Traffic Analysis using Social Media Data on the Cloud, in \emph{the 5th IEEE/ACM International Workshop on Smart City Clouds: Technologies, Systems and Applications}, Zurich, Switzerland, December 2018.
+    \item {\bf Y. Gong}, F. Deng, R.O. Sinnott, Identification of (near) Real-time Traffic Congestion in the Cities of Australia through Twitter, Understanding the City with Urban Informatics, ACM International Conference on Information and Knowledge Management (CIKM) 2015, Melbourne, Australia, October 2015, DOI: 10.1145/2811271.2811276.
+    \item {\bf Y. Gong}, L. Morandini, R.O. Sinnott, The Design and Benchmarking of a Cloud-based Platform for Processing and Visualization of Traffic Data, IEEE International Conference on Big Data and Smart Computing, Jeju Island, Korea, February 2017,  DOI: 10.1109/BIGCOMP.2017.7881699 .
+    \item {\bf Y. Gong}, P. Rimba, R.O. Sinnott, A Big Data Architecture for Near Real-time Traffic Analytics, IEEE/ACM International Conference on Utility and Cloud Computing (UCC) Conference, Austin Texas, December 2017, DOI: 10.1145/3147234.3151010.
+    \item {\bf Y. Gong}, P. Rimba, R.O. Sinnott, RT-DBSCAN: Real-time Parallel Clustering of Spatio-Temporal Data using Spark-Streaming, International Conference on Computational Science (ICCS 2018), Wuxi, China, June 2018, DOI: 10.1007/978-3-319-93698-7\_40.
+    \item {\bf Y. Gong}, R.O. Sinnott, S. Chen, P. Rimba, Urban Traffic Analysis using Social Media Data on the Cloud, IEEE/ACM 5th International Workshop on Smart City Clouds: Technologies, Systems and Applications, Zurich, Switzerland, December 2018, DOI: 10.1109/UCC-Companion.2018.00047.
+    
+    \item R.O. Sinnott, P. Chhetri, {\bf Y. Gong}, A. Macaulay, W. Voorsluys, Privacy-preserving Data Linkage through Blind Geo-spatial Data Aggregation, IEEE International Symposium on Big Data Security on Cloud (BigDataSecurity 2015), New York, USA, August 2015, DOI: 10.1109/HPCC-CSS-ICESS.2015.80 .
+    \item R.O. Sinnott, C. Bayliss, A. Bromage, G. Galang, {\bf Y. Gong}, P. Greenwood, G. Jayaputera, D. Marques, L. Morandini, M. Nino-Ruiz, G. Nogoorani, H. Pursultani, R. Rabanal, M. Sarwar, W. Voorsluys, I. Widjaja, The Urban Data Re-use and Integration Platform for Australia: Design, Realisation and Case Studies, IEEE International Conference on Information Re-use and Integration, San Francisco, USA, August 2015,  DOI: 10.1109/IRI.2015.24 .
+    \item R.O. Sinnott, C. Bayliss, A. Bromage, G. Galang, {\bf Y. Gong}, P. Greenwood, G. Jayaputera, D. Marques, L. Morandini, G. Nogoorani, H. Pursultani, M. Sarwar, W. Voorsluys, I. Widjaja, Privacy Preserving Geo-Linkage in the Big Urban Data Era, Journal of Grid Computing, June 2016, DOI: 10.1007/s10723-016-9372-0.
     \end{itemize}
 \end{frame}
 
